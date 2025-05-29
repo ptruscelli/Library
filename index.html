@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Odin Library App</title>
+</head>
+<body>
+    <header>
+        <h1>Library</h1>
+    </header>
+    <div class="button">
+        <button class="openModal">+ Add Book</button>
+    </div>
+    <main id="cardsContainer">
+        
+
+    </main>
+    <dialog id="modal">
+        <div class="cover"> <!-- div used to close dialog when user clicks outside dialog window  -->
+            
+            <h2>Add a new book</h2>
+            <form id="addBookForm" method="dialog">
+                <div class="formRow">
+                    <input type="text" name="formTitle" id="formTitle" placeholder="Book Title" required>
+                    <label for="formTitle">Book Title *</label>
+                </div>
+
+                <div class="formRow">
+                    <input type="text" name="formAuthor" id="formAuthor" placeholder="Author" required>
+                    <label for="formAuthor">Name of Author *</label>
+                </div>
+
+                <div class="formRow">
+                    <input type="number" name="formPageNumber" id="formPageNumber" placeholder="No. of Pages">
+                    <label for="formPageNumber">No. of Pages</label>
+                </div>
+
+                <button class="formSubmit" type="submit">Add New book</button>
+            </form>
+        </div>
+    </dialog>
+
+    <script src="./script.js"></script>
+</body>
+</html>
