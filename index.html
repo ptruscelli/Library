@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="modern-normalize.css">
     <link rel="stylesheet" href="styles.css">
     <title>Odin Library App</title>
 </head>
@@ -35,6 +36,26 @@
                 <div class="formRow">
                     <input type="number" name="formPageNumber" id="formPageNumber" placeholder="No. of Pages">
                     <label for="formPageNumber">No. of Pages</label>
+                </div>
+
+                <!-- <div class="formRow">
+                    <label for="formRead">Read the book?</label>
+                    <input type="checkbox" name="formRead" id="formRead">
+                </div> -->
+
+                <div class="switch-container formRow">
+                    <div class="switch-toggle">
+                        <input type="radio" name="formReadStatus" id="radio1" value="not-read" checked="checked">
+                        <label for="radio1">Not Read</label>
+                        
+                        <input type="radio" name="formReadStatus" id="radio2" value="in-progress">
+                        <label for="radio2">In Progress</label>
+                        
+                        <input type="radio" name="formReadStatus" id="radio3" value="finished">
+                        <label for="radio3">Finished</label>
+                        
+                        <span class="moving-label"></span>
+                    </div>
                 </div>
 
                 <button class="formSubmit" type="submit">Add New book</button>

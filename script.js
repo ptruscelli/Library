@@ -1,17 +1,21 @@
+// const { createElement } = require("react");
+
+
 
 const cardsContainer = document.querySelector("#cardsContainer");
 const modal = document.querySelector("#modal");
 const openModal = document.querySelector(".openModal");
 const formSubmit = document.querySelector(".formSubmit");
-
 const bookForm = document.querySelector("#addBookForm");
 
-// Array containing all books
+
+// Array containing books
 let myLibrary = [];
 
 
+
 // Object constructor for book instances
-function Book(title, author, pageCount) {
+function Book(title, author, pageCount, readStatus) {
     if (!new.target) {
     throw Error("You must use the 'new' operator to call the constructor");
     }
@@ -19,7 +23,7 @@ function Book(title, author, pageCount) {
     this.title = title;
     this.author = author;
     this.pageCount = pageCount;
-    // this.read = read;
+    this.readStatus = readStatus;
     this.onPage = false;
     this.id = crypto.randomUUID();
 
@@ -29,10 +33,11 @@ function Book(title, author, pageCount) {
 
 
 // function that creates a book instance and adds it to myLibrary array
-function addBook(title, author, pageCount, read) {
-    const newBook = new Book(title, author, pageCount, read);
+function addBook(title, author, pageCount, readStatus) {
+    const newBook = new Book(title, author, pageCount, readStatus);
     myLibrary.push(newBook);
 };
+
 
 
 // function that removes the "book card" element when its delete button is pressed
@@ -50,20 +55,20 @@ function createBookCard(book) {
     bookCard.dataset.id = book.id; // attach unique book id to element to be able to identify it in DOM
     bookCard.classList.add("card");
 
-    const title = document.createElement("p");
+    const title = document.createElement("h2");
     const author = document.createElement("p");
     const pageCount = document.createElement("p");
     const deleteBtn = document.createElement("button");
-
+    const readStatusToggle = createReadToggle(book.readStatus);
 
     title.textContent = book.title;
     author.textContent = book.author;
-    pageCount.textContent = book.pageCount;
-    deleteBtn.textContent = "Remove Book";
+    pageCount.textContent = `No. of pages: ${book.pageCount}`;
 
+    deleteBtn.textContent = `Remove Book`;
     deleteBtn.addEventListener("click", () => removeBook(bookCard, book.id));
 
-    bookCard.append(title, author, pageCount, deleteBtn);
+    bookCard.append(title, author, pageCount, readStatusToggle, deleteBtn);
 
     return bookCard;
 };
@@ -79,28 +84,64 @@ function addToPage() {
             const bookCard = createBookCard(book);
 
             cardsContainer.appendChild(bookCard);
-            book.onPage = true; // track that the book is now on the page
+            book.onPage = true; // track that the added book is now on the page
         };
     };
 };
 
 
 
+// function to create read status 3-state toggle switch 
+function createReadToggle(status = "not-read") {
 
-addBook("1984", "George Orwell", 328);
-addBook("Dune", "Frank Herbert", 412);
+    const switchContainer = document.createElement("div");
+    switchContainer.classList.add("switch-container");
 
-addToPage();
+    const switchToggle = document.createElement("div");
+    switchToggle.classList.add("switch-toggle");
+
+    const labels = ["Not Read", "In Progress", "Finished"];
+    const radioName = crypto.randomUUID(); // declare random name outside forEach so that the 3 radio inputs get same random name
+
+    ["not-read", "in-progress", "finished"].forEach((value, i) => {
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.id = crypto.randomUUID();
+        input.name = radioName;
+        input.value = value;
+        if (status === value) input.checked = true;
+
+        const label = document.createElement("label");
+        label.htmlFor = input.id;
+        label.textContent = labels[i];
+
+        switchToggle.appendChild(input);
+        switchToggle.appendChild(label);
+
+    });
+
+    const span = document.createElement("span");
+    span.classList.add("moving-label");
+    switchToggle.appendChild(span);
+
+    switchContainer.appendChild(switchToggle);
+
+    return switchContainer;
+};
+
+
+
+
+
 
 
 
 openModal.addEventListener('click', () => {
+    bookForm.reset(); // clear form inputs before each use
     modal.showModal();
 });
 
-formSubmit.addEventListener('click', () => {
-    modal.close();
-});
 
 modal.addEventListener('click', (event) => {
     if (event.target === modal) {
@@ -112,16 +153,29 @@ modal.addEventListener('click', (event) => {
 
 bookForm.addEventListener('submit', (event) => {
     event.preventDefault(); // stop html default behaviour of refreshing page
-
+   
     // take data from form and store in object
-    const formData = Object.fromEntries(new FormData(bookForm).entries());
+    const formData = Object.fromEntries(new FormData(event.target).entries()); // event.target === bookForm
+    const readStatus = formData.formReadStatus; // "not-read", "in-progress" or "finished"
+
+    // const isRead = formData.formRead === 'on' // same as formData.read === 'on' ? true : false;
 
     addBook(
         formData.formTitle,
         formData.formAuthor,
-        formData.formPageNumber
+        formData.formPageNumber,
+        readStatus
     );
 
     addToPage();
+    modal.close();
 });
+
+
+
+addBook("1984", "George Orwell", 328, "in-progress");
+addBook("Dune", "Frank Herbert", 412, "in-progress");
+
+addToPage();
+
 
