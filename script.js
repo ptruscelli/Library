@@ -61,12 +61,13 @@ function createBookCard(book) {
     const deleteBtn = document.createElement("button");
     const readStatusToggle = createReadToggle(book.readStatus);
 
-    title.textContent = book.title;
+    title.textContent = `${book.title}`;
     author.textContent = book.author;
-    pageCount.textContent = `No. of pages: ${book.pageCount}`;
+    pageCount.textContent = `${book.pageCount} Pages`;
 
     deleteBtn.textContent = `Remove Book`;
     deleteBtn.addEventListener("click", () => removeBook(bookCard, book.id));
+    deleteBtn.classList.add("deleteBtn");
 
     bookCard.append(title, author, pageCount, readStatusToggle, deleteBtn);
 
