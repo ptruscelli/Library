@@ -8,19 +8,20 @@ class Book {
         this.author = author;
         this.pageCount = pageCount;
         this.readStatus = readStatus;
-        this.onPage = false;
-        this.id = crypto.randomUUID();
+        this.onPage = false; // track if book has been added to DOM
+        this.id = crypto.randomUUID(); // generate unique id for selecting book in DOM
     }
 
 }
 
 
+// class for library array and related book removing/adding functions
 class Library {
-// class for library array and related functions
+
 
     constructor(cardsContainer) {
         this.books = [];
-        this.cardsContainer = cardsContainer;
+        this.cardsContainer = cardsContainer; // html container for adding book elements
     }
 
     // create book instance and add to array
@@ -34,6 +35,8 @@ class Library {
         bookCard.remove(); // remove bookcard element from DOM
     }
 
+
+    // creates html bookcard instances from library array and adds to page
     addToPage() {
         for(const book of this.books) {
             if (!book.onPage) { // only books that aren't already on the page get added
@@ -49,18 +52,19 @@ class Library {
 
 
 
-
+// creates DOM elements of books and handles visual components
 class Bookcard {
 
     constructor(book, library) {
-        this.book = book;
-        this.library = library;
+        this.book = book; // reference to Book instance
+        this.library = library; // reference to parent library
         this.element = this.createBookcard();
     }
 
+
     createBookcard() {
         const bookCard = document.createElement("div");
-        bookCard.dataset.id = this.book.id; // attach unique book id to the element to be able to identify it in the DOM
+        bookCard.dataset.id = this.book.id; // attach the unique book id to the element to be able to identify it in the DOM
         bookCard.classList.add("card");
 
         const title = document.createElement("h2");
@@ -127,7 +131,7 @@ class Bookcard {
 
 
 
-
+// handles modal dialogue form for adding new books to page
 
 class BookFormModal {
 
@@ -149,12 +153,14 @@ class BookFormModal {
     }
 
 
+    // open modal when "add book" button is clicked
     openModalHandler() {
         this.bookForm.reset(); // clear form inputs before each use
         this.modal.showModal();
     }
 
 
+    // close modal when user clicks outside dialogue content
     outsideClickHandler(event) {
         if (event.target === this.modal) {
             this.modal.close();
@@ -162,13 +168,15 @@ class BookFormModal {
     }
 
 
+    // process form submission and add new submitted book to library
     formSubmitHandler(event) {
-        event.preventDefault(); // stop html default behaviour of refreshing page
+        event.preventDefault(); // stop html default page refresh
    
         // take data from form and store in object
         const formData = Object.fromEntries(new FormData(event.target).entries()); // event.target === bookForm
         const readStatus = formData.formReadStatus; // "not-read", "in-progress" or "finished"
 
+        // add book to library array
         this.library.addBook(
             formData.formTitle,
             formData.formAuthor,
@@ -176,6 +184,7 @@ class BookFormModal {
             readStatus
         );
 
+        // add book to visual library and finally close modal
         this.library.addToPage();
         this.modal.close();
     }
@@ -183,13 +192,13 @@ class BookFormModal {
 }
 
 
-// initialize library
+// initialize library app upon page load
 (function() {
     const cardsContainer = document.querySelector("#cardsContainer");
     const mainLibrary = new Library(cardsContainer);
     const formModal = new BookFormModal(mainLibrary);
 
-    // add a few books as placeholders
+    // add example books as placeholders
     mainLibrary.addBook("1984", "George Orwell", 328, "in-progress");
     mainLibrary.addBook("Dune", "Frank Herbert", 412, "in-progress");
     mainLibrary.addToPage();
